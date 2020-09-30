@@ -1,4 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import Box from '@material-ui/core/Box';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+    root: {
+        border: 'solid 1px black',
+        borderRadius: 3,
+        color: 'white',
+        '& > *': {
+            margin: '30px',
+        }
+    },
+    colorPicker: {
+        width: '50px',
+    }
+});
 
 const useObjectProperty = (canvas, property, object) => {
     const [propertyState, setPropertyState] = useState(null);
@@ -23,26 +43,45 @@ export default function EditMenu({ canvas, objects }) {
     const [fontSize, updateFontSize] = useObjectProperty(canvas, 'fontSize', objects[0]);
     const [fontColor, updateFontColor] = useObjectProperty(canvas, 'fill', objects[0]);
 
+    const classes = useStyles();
+
     if (shouldRender) {
         return (
-            <div>
-                <div>
-                    <label htmlFor="font-family">Font Family</label>
-                    <select id="font-family" value={fontFamily} onChange={(e) => updateFontFamily(e.target.value)}>
+            <Box className={classes.root}>
+                <Box>
+                    <InputLabel shrink htmlFor="font-family">
+                        Font Family
+                    </InputLabel>
+                    <NativeSelect
+                        inputProps={{
+                            id: 'font-family',
+                        }}
+                        value={fontFamily}
+                        onChange={(e) => updateFontFamily(e.target.value)}
+                    >
                         <option>Comic Sans</option>
                         <option>Arial</option>
                         <option>Consolas</option>
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="font-size">Font Size</label>
-                    <input id="font-size" type="number" value={fontSize} onChange={(e) => updateFontSize(e.target.value)} />
-                </div>
-                <div>
-                    <label htmlFor="font-color">Font Color</label>
-                    <input id="font-color" type="color" value={fontColor} onChange={(e) => updateFontColor(e.target.value)} />
-                </div>
-            </div>
+                    </NativeSelect>
+                </Box>
+                <Box>
+                    <TextField label="Font Size" type="number" value={fontSize} onChange={(e) => updateFontSize(e.target.value)} />
+                </Box>
+                <Box>
+                    <InputLabel shrink htmlFor="font-color">
+                      Font Color
+                    </InputLabel>
+                    <Input
+                        inputProps={{
+                            id: 'font-color',
+                        }}
+                        type="color"
+                        value={fontColor}
+                        onChange={(e) => updateFontColor(e.target.value)}
+                        className={classes.colorPicker}
+                    />
+                </Box>
+            </Box>
         );
     }
 

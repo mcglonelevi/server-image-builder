@@ -48,23 +48,25 @@ export default function Editor() {
                     <canvas id="canvas"></canvas>
                 </div>
             </div>
-            <button
-                onClick={() => {
-                    canvasRef.current.add(new fabric.IText("I'm in Comic Sans", {
-                        fontFamily: 'Comic Sans',
-                    }));
-                }}
-            >
-                Add Text
-            </button>
-            <button
-                onClick={() => {
-                    const objs = canvasRef.current.getActiveObjects();
-                    canvasRef.current.remove(...objs);
-                }}
-            >
-                Remove
-            </button>
+            <div>
+                <button
+                    onClick={() => {
+                        canvasRef.current.add(new fabric.IText("I'm in Comic Sans", {
+                            fontFamily: 'Comic Sans',
+                        }));
+                    }}
+                >
+                    Add Text
+                </button>
+                <button
+                    onClick={() => {
+                        const objs = canvasRef.current.getActiveObjects();
+                        canvasRef.current.remove(...objs);
+                    }}
+                >
+                    Remove
+                </button>
+            </div>
             <EditMenu objects={objects} canvas={canvasRef} />
         </>
     );
