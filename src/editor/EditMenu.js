@@ -5,6 +5,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
+import FontFaceObserver from 'fontfaceobserver';
 
 const useStyles = makeStyles({
     root: {
@@ -20,6 +21,11 @@ const useStyles = makeStyles({
     }
 });
 
+async function loadAndUse(font) {
+    const myfont = new FontFaceObserver(font);
+    await myfont.load();
+}
+
 const useObjectProperty = (canvas, property, object) => {
     const [propertyState, setPropertyState] = useState(null);
 
@@ -27,7 +33,10 @@ const useObjectProperty = (canvas, property, object) => {
         setPropertyState(null);
     }, [property, object, setPropertyState]); // When property or object change, we need to clear property state.
 
-    const updater = (value) => {
+    const updater = async (value) => {
+        if (property === 'fontFamily') {
+            await loadAndUse(value);
+        }
         object.set(property, value);
         setPropertyState(value);
         canvas.current.renderAll();
@@ -59,9 +68,9 @@ export default function EditMenu({ canvas, objects }) {
                         value={fontFamily}
                         onChange={(e) => updateFontFamily(e.target.value)}
                     >
-                        <option>Comic Sans</option>
-                        <option>Arial</option>
-                        <option>Consolas</option>
+                        <option>UbuntuMono</option>
+                        <option>Roboto</option>
+                        <option>ABeeZee</option>
                     </NativeSelect>
                 </Box>
                 <Box>

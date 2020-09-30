@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { fabric } from 'fabric';
 import EditMenu from './EditMenu';
+import FontFaceObserver from 'fontfaceobserver';
 
 async function loadImage() {
     return new Promise((res) => {
@@ -10,30 +11,50 @@ async function loadImage() {
     });
 }
 
+async function usePreloadedFonts() {
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            const observer = new FontFaceObserver('Roboto');
+            await observer.load();
+            setLoaded(true);
+        })();
+    }, []);
+
+    return loaded;
+}
+
 function useCanvas() {
     const canvasRef = useRef(null);
     const [objects, setObjects] = useState([]);
-    
+
+    const loaded = usePreloadedFonts();
+    const hasRun = useRef(false);
+
     useEffect(() => {
-        (async () => {
-            const img = await loadImage();
-            canvasRef.current = new fabric.Canvas('canvas', {
-                width: img.width,
-                height: img.height,
-                backgroundImage: img,
-            });
-            canvasRef.current.on('selection:created', (opts) => {
-                console.log(opts.selected);
-                setObjects(opts.selected);
-            });
-            canvasRef.current.on('selection:updated', (opts) => {
-                setObjects([...canvasRef.current.getActiveObjects()]);
-            });
-            canvasRef.current.on('selection:cleared', (opts) => {
-                setObjects([]);
-            });
-        })();
-    }, []);
+        if (loaded && !hasRun.current) {
+            hasRun.current = true;
+            (async () => {
+                const img = await loadImage();
+                canvasRef.current = new fabric.Canvas('canvas', {
+                    width: img.width,
+                    height: img.height,
+                    backgroundImage: img,
+                });
+                canvasRef.current.on('selection:created', (opts) => {
+                    console.log(opts.selected);
+                    setObjects(opts.selected);
+                });
+                canvasRef.current.on('selection:updated', (opts) => {
+                    setObjects([...canvasRef.current.getActiveObjects()]);
+                });
+                canvasRef.current.on('selection:cleared', (opts) => {
+                    setObjects([]);
+                });
+            })();
+        }
+    }, [loaded]);
 
     return [canvasRef, objects];
 }
@@ -52,7 +73,7 @@ export default function Editor() {
                 <button
                     onClick={() => {
                         canvasRef.current.add(new fabric.IText("I'm in Comic Sans", {
-                            fontFamily: 'Comic Sans',
+                            fontFamily: 'Roboto',
                         }));
                     }}
                 >
