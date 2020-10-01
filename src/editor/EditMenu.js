@@ -6,6 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import FontFaceObserver from 'fontfaceobserver';
+const FontNames = require('../Font.json');
 
 const useStyles = makeStyles({
     root: {
@@ -68,9 +69,7 @@ export default function EditMenu({ canvas, objects }) {
                         value={fontFamily}
                         onChange={(e) => updateFontFamily(e.target.value)}
                     >
-                        <option>UbuntuMono</option>
-                        <option>Roboto</option>
-                        <option>ABeeZee</option>
+                        {FontNames.map((name) => <option>{name}</option>)}
                     </NativeSelect>
                 </Box>
                 <Box>

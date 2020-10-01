@@ -25,4 +25,12 @@ glob('src/fonts/**/*-Regular.ttf', (err, files) => {
             console.log(err);
         });
     });
+
+    const fontNames = files.map((file) => {
+        const fontNameExploded = file.split('/');
+        const fileName = fontNameExploded[fontNameExploded.length - 1];
+        return fileName.replace('-Regular.ttf', '');
+    });
+
+    fs.writeFileSync('src/Font.json', JSON.stringify(fontNames));
 });
