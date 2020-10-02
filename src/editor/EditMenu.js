@@ -69,7 +69,7 @@ export default function EditMenu({ canvas, objects }) {
                         value={fontFamily}
                         onChange={(e) => updateFontFamily(e.target.value)}
                     >
-                        {FontNames.map((name) => <option>{name}</option>)}
+                        {FontNames.map((name) => <option key={name}>{name}</option>)}
                     </NativeSelect>
                 </Box>
                 <Box>

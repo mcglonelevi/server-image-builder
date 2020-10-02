@@ -3,34 +3,34 @@
 const glob = require('glob');
 const fs = require('fs');
 
-const generateFontFace = (fontFolderLocation) => {
-    const fontNameExploded = fontFolderLocation.split('/');
-    const file = fontNameExploded[fontNameExploded.length - 1];
-
+const generateFontFace = (fontName, fontLocation) => {
     return `@font-face {
-        font-family: "${file.replace('-Regular.ttf', '')}";
-        src: url("./fonts/${fontFolderLocation.replace('src/fonts/', '')}") format('truetype');
+        font-family: "${fontName}";
+        src: url("./fonts/${fontLocation}") format('truetype');
     }
     `;
 }
 
-glob('src/fonts/**/*-Regular.ttf', (err, files) => {
+glob('src/fonts/**/*.ttf', (err, files) => {
     if (err) {
         console.log(err);
         return;
     }
+ 
+    const fontMapping = files.reduce((acc, file) => {
+        const fontLocationExploded = file.split('/');
+        const fileName = fontLocationExploded[fontLocationExploded.length - 1].replace('-Regular', '').replace('.ttf', '');
 
-    files.forEach((file) => {
-        fs.appendFile('src/Fonts.css', generateFontFace(file), (err) => {
-            console.log(err);
-        });
+        if (!fileName.includes('[')) {
+            acc[fileName] = file;
+        }
+
+        return acc;
+    }, {});
+
+    fs.writeFileSync('src/Font.json', JSON.stringify(Object.keys(fontMapping)));
+
+    Object.keys(fontMapping).forEach((fontName) => {
+        fs.appendFileSync('src/Fonts.css', generateFontFace(fontName, fontMapping[fontName]));
     });
-
-    const fontNames = files.map((file) => {
-        const fontNameExploded = file.split('/');
-        const fileName = fontNameExploded[fontNameExploded.length - 1];
-        return fileName.replace('-Regular.ttf', '');
-    });
-
-    fs.writeFileSync('src/Font.json', JSON.stringify(fontNames));
 });
