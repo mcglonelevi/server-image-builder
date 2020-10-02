@@ -6,12 +6,12 @@ const fs = require('fs');
 const generateFontFace = (fontName, fontLocation) => {
     return `@font-face {
         font-family: "${fontName}";
-        src: url("./fonts/${fontLocation}") format('truetype');
+        src: url("${fontLocation.replace('public/', './')}") format('truetype');
     }
     `;
 }
 
-glob('src/fonts/**/*.ttf', (err, files) => {
+glob('public/fonts/**/*.ttf', (err, files) => {
     if (err) {
         console.log(err);
         return;
@@ -28,9 +28,9 @@ glob('src/fonts/**/*.ttf', (err, files) => {
         return acc;
     }, {});
 
-    fs.writeFileSync('src/Font.json', JSON.stringify(Object.keys(fontMapping)));
+    fs.writeFileSync('src/Font.json', JSON.stringify(Object.keys(fontMapping).sort()));
 
     Object.keys(fontMapping).forEach((fontName) => {
-        fs.appendFileSync('src/Fonts.css', generateFontFace(fontName, fontMapping[fontName]));
+        fs.appendFileSync('public/Fonts.css', generateFontFace(fontName, fontMapping[fontName]));
     });
 });
