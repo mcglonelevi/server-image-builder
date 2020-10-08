@@ -74,58 +74,67 @@ export default function Editor() {
                     <canvas id="canvas"></canvas>
                 </div>
             </div>
-            <div>
-                <button
-                    onClick={() => {
-                        canvasRef.current.add(new fabric.IText("I'm in Comic Sans", {
-                            fontFamily: 'Roboto',
-                        }));
-                    }}
-                >
-                    Add Text
-                </button>
-                <button
-                    onClick={() => {
-                        const objs = canvasRef.current.getActiveObjects();
-                        canvasRef.current.remove(...objs);
-                    }}
-                >
-                    Remove
-                </button>
-                <button
-                    onClick={async () => {
-                        console.log({
-                            method: 'POST',
-                            body: {
-                                id: uuidv4(),
-                                canvas: {
-                                    ...canvasRef.current.toJSON(),
-                                }
-                            },
-                        });
-                        const res = await fetch('http://localhost:3000/images', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                id: uuidv4(),
-                                canvas: {
-                                    ...canvasRef.current.toJSON(),
+            <div className="btn-toolbar">
+                <div className="btn-group mr-2">
+                    <button
+                        className="btn btn-success"
+                        onClick={() => {
+                            canvasRef.current.add(new fabric.IText("I'm in Comic Sans", {
+                                fontFamily: 'Roboto',
+                            }));
+                        }}
+                    >
+                        Add Text
+                    </button>
+                </div>
+                <div className="btn-group mr-2">
+                    <button
+                        className="btn btn-danger"
+                        onClick={() => {
+                            const objs = canvasRef.current.getActiveObjects();
+                            canvasRef.current.remove(...objs);
+                        }}
+                    >
+                        Remove
+                    </button>
+                </div>
+                <div className="btn-group mr-2">
+                    <button
+                        className="btn btn-primary"
+                        onClick={async () => {
+                            console.log({
+                                method: 'POST',
+                                body: {
+                                    id: uuidv4(),
+                                    canvas: {
+                                        ...canvasRef.current.toJSON(),
+                                    }
                                 },
-                                game: {
-                                    host: ip,
-                                    port: port,
-                                    type: game,
-                                }
-                            }),
-                        });
-                        const json = await res.json();
-                        console.log(json);
-                    }}
-                >
-                    Submit
-                </button>
+                            });
+                            const res = await fetch('http://localhost:3000/images', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    id: uuidv4(),
+                                    canvas: {
+                                        ...canvasRef.current.toJSON(),
+                                    },
+                                    game: {
+                                        host: ip,
+                                        port: port,
+                                        type: game,
+                                    }
+                                }),
+                            });
+                            const json = await res.json();
+                            console.log(json);
+                        }}
+                    >
+                        Submit
+                    </button>
+                </div>
             </div>
             <EditMenu objects={objects} canvas={canvasRef} />
         </>

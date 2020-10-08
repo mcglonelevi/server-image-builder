@@ -1,26 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
 import FontFaceObserver from 'fontfaceobserver';
 const FontNames = require('../Font.json');
-
-const useStyles = makeStyles({
-    root: {
-        border: 'solid 1px black',
-        borderRadius: 3,
-        color: 'white',
-        '& > *': {
-            margin: '30px',
-        }
-    },
-    colorPicker: {
-        width: '50px',
-    }
-});
 
 async function loadAndUse(font) {
     const myfont = new FontFaceObserver(font);
@@ -53,43 +33,42 @@ export default function EditMenu({ canvas, objects }) {
     const [fontSize, updateFontSize] = useObjectProperty(canvas, 'fontSize', objects[0]);
     const [fontColor, updateFontColor] = useObjectProperty(canvas, 'fill', objects[0]);
 
-    const classes = useStyles();
-
     if (shouldRender) {
         return (
-            <Box className={classes.root}>
-                <Box>
-                    <InputLabel shrink htmlFor="font-family">
-                        Font Family
-                    </InputLabel>
-                    <NativeSelect
-                        inputProps={{
-                            id: 'font-family',
-                        }}
-                        value={fontFamily}
-                        onChange={(e) => updateFontFamily(e.target.value)}
-                    >
-                        {FontNames.map((name) => <option key={name}>{name}</option>)}
-                    </NativeSelect>
-                </Box>
-                <Box>
-                    <TextField label="Font Size" type="number" value={fontSize} onChange={(e) => updateFontSize(e.target.value)} />
-                </Box>
-                <Box>
-                    <InputLabel shrink htmlFor="font-color">
-                      Font Color
-                    </InputLabel>
-                    <Input
-                        inputProps={{
-                            id: 'font-color',
-                        }}
-                        type="color"
-                        value={fontColor}
-                        onChange={(e) => updateFontColor(e.target.value)}
-                        className={classes.colorPicker}
-                    />
-                </Box>
-            </Box>
+            <div className="card" style={{ marginTop: '15px', }}>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="form-group col-sm">
+                            <label>Font Family</label>
+                            <select
+                                value={fontFamily}
+                                onChange={(e) => updateFontFamily(e.target.value)}
+                                className="form-control"
+                            >
+                                {FontNames.map((name) => <option key={name}>{name}</option>)}
+                            </select>
+                        </div>
+                        <div className="form-group col-sm">
+                            <label>Font Size</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                value={fontSize} onChange={(e) => updateFontSize(e.target.value)} />
+                        </div>
+                        <div className="form-group col-sm">
+                            <label>
+                            Font Color
+                            </label>
+                            <input
+                                className="form-control"
+                                type="color"
+                                value={fontColor}
+                                onChange={(e) => updateFontColor(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
         );
     }
 

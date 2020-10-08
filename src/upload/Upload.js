@@ -33,7 +33,7 @@ export default function Upload() {
                 maxFileSize={5242880}
                 name='background-image'
             />
-            <input type="submit" value="Upload" />
+            <input type="submit" value="Upload" className="btn btn-primary" disabled={picture ? false : true} />
         </form>
     );
 }
