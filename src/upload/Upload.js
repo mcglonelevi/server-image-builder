@@ -12,7 +12,7 @@ export default function Upload() {
             const data = new FormData();
             data.append('background-image', picture);
 
-            fetch('http://localhost:3000/images/upload', {
+            fetch(`${process.env.REACT_APP_API_HOST}/images/upload`, {
               method: 'POST',
               body: data
             }).then(async response => {

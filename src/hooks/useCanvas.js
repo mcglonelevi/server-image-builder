@@ -4,7 +4,7 @@ import { fabric } from 'fabric';
 
 async function loadImage(id) {
     return new Promise((res) => {
-        fabric.Image.fromURL(`http://localhost:3000/${id}`, (img) => {
+        fabric.Image.fromURL(`${process.env.REACT_APP_API_HOST}/${id}`, (img) => {
             res(img);
         });
     });

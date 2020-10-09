@@ -3,12 +3,12 @@ import { useParams } from "react-router-dom";
 
 export default function View() {
     const { id } = useParams();
-    const url = `http://localhost:3000/images/${id}`;
+    const url = `${process.env.REACT_APP_API_HOST}/images/${id}`;
 
     return (
         <>
             <div>
-                <img className={'img-fluid'} src={url} alt={'server image'} />
+                <img className={'img-fluid'} src={url} alt={'server'} />
             </div>
             <div className="card" style={{ marginTop: '10px' }}>
                 <div className="col form-group">

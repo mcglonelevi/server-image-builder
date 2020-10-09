@@ -7,7 +7,7 @@ function useVerifyGameServer() {
 
     const validateServer = async ({ game, ip, port, history }) => {
         setLoading(true);
-        const res = await fetch('http://localhost:3000/servers/query', {
+        const res = await fetch(`${process.env.REACT_APP_API_HOST}/servers/query`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
