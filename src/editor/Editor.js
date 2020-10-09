@@ -12,6 +12,7 @@ function useSubmitCanvas() {
 
     const submitCanvas = async ({ game, ip, port, history, canvasRef }) => {
         const imageId = uuidv4();
+        const readId = uuidv4();
 
         try {
             setLoading(true);
@@ -29,7 +30,8 @@ function useSubmitCanvas() {
                         host: ip,
                         port: port,
                         type: game,
-                    }
+                    },
+                    readId,
                 }),
             });
             
@@ -37,7 +39,7 @@ function useSubmitCanvas() {
                 throw new Error('Error submitting image.');
             }
 
-            history.push(`/view/${imageId}`);
+            history.push(`/view/${readId}`);
         } catch (e) {
             setLoading(false);
             alert('Error submitting image.');

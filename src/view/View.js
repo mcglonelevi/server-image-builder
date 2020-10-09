@@ -8,16 +8,12 @@ export default function View() {
     return (
         <>
             <div>
-                <div className="col">
-                    <img src={url} alt={'server image'} />
-                </div>
+                <img className={'img-fluid'} src={url} alt={'server image'} />
             </div>
-            <div className="col" style={{ marginTop: '10px' }}>
-                <div className="card">
-                    <div className="col form-group">
-                        <label>Image URL</label>
-                        <input type='text' className="form-control" disabled={true} value={url} />
-                    </div>
+            <div className="card" style={{ marginTop: '10px' }}>
+                <div className="col form-group">
+                    <label>Image URL</label>
+                    <input type='text' className="form-control" disabled={true} value={url} />
                 </div>
             </div>
         </>

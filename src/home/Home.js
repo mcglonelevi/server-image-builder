@@ -56,7 +56,13 @@ function Home() {
                 >
                     <option value=''></option>
                     <option value='7d2d'>7 Days to Die</option>
+                    <option value='garrysmod'>Garry's Mod</option>
                     <option value='minecraft'>Minecraft</option>
+                    <option value='rust'>Rust</option>
+                    <option value='starbound'>Starbound</option>
+                    <option value='tf2'>TF2</option>
+                    <option value='forrest'>The Forest</option>
+                    <option value='unturned'>Unturned</option>
                 </select>
             </div>
             <div className="form-group">
