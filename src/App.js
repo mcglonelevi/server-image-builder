@@ -8,6 +8,7 @@ import {
 import Editor from './editor/Editor';
 import Home from './home/Home';
 import Upload from './upload/Upload';
+import View from './view/View';
 import { GameContextProvider } from './contexts/GameContext';
 
 function App() {
@@ -20,6 +21,9 @@ function App() {
               <Switch>
                 <Route path="/editor/:id">
                   <Editor />
+                </Route>
+                <Route path="/view/:id">
+                  <View />
                 </Route>
                 <Route path="/upload">
                   <Upload />

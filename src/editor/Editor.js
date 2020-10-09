@@ -1,77 +1,66 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { fabric } from 'fabric';
 import EditMenu from './EditMenu';
-import FontFaceObserver from 'fontfaceobserver';
 import { v4 as uuidv4 } from 'uuid';
 import { useParams } from "react-router-dom";
 import { useGameContext } from '../contexts/GameContext';
+import useCanvas from '../hooks/useCanvas';
+import { useHistory } from "react-router-dom";
 
-async function loadImage(id) {
-    return new Promise((res) => {
-        fabric.Image.fromURL(`http://localhost:3000/${id}`, (img) => {
-            res(img);
-        });
-    });
-}
+function useSubmitCanvas() {
+    const [loading, setLoading] = useState(false);
 
-async function usePreloadedFonts() {
-    const [loaded, setLoaded] = useState(false);
+    const submitCanvas = async ({ game, ip, port, history, canvasRef }) => {
+        const imageId = uuidv4();
 
-    useEffect(() => {
-        (async () => {
-            const observer = new FontFaceObserver('Roboto');
-            await observer.load();
-            setLoaded(true);
-        })();
-    }, []);
+        try {
+            setLoading(true);
+            const res = await fetch('http://localhost:3000/images', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: imageId,
+                    canvas: {
+                        ...canvasRef.current.toJSON(),
+                    },
+                    game: {
+                        host: ip,
+                        port: port,
+                        type: game,
+                    }
+                }),
+            });
+            
+            if (res.status !== 200) {
+                throw new Error('Error submitting image.');
+            }
 
-    return loaded;
-}
-
-function useCanvas() {
-    const canvasRef = useRef(null);
-    const [objects, setObjects] = useState([]);
-
-    const { id } = useParams();
-    const loaded = usePreloadedFonts();
-    const hasRun = useRef(false);
-
-    useEffect(() => {
-        if (loaded && !hasRun.current) {
-            hasRun.current = true;
-            (async () => {
-                const img = await loadImage(id);
-                canvasRef.current = new fabric.Canvas('canvas', {
-                    width: img.width,
-                    height: img.height,
-                    backgroundImage: img,
-                });
-                canvasRef.current.on('selection:created', (opts) => {
-                    console.log(opts.selected);
-                    setObjects(opts.selected);
-                });
-                canvasRef.current.on('selection:updated', (opts) => {
-                    setObjects([...canvasRef.current.getActiveObjects()]);
-                });
-                canvasRef.current.on('selection:cleared', (opts) => {
-                    setObjects([]);
-                });
-            })();
+            history.push(`/view/${imageId}`);
+        } catch (e) {
+            setLoading(false);
+            alert('Error submitting image.');
         }
-    }, [loaded, id]);
+    };
 
-    return [canvasRef, objects];
+    return [loading, submitCanvas];
 }
 
 export default function Editor() {
-    const [canvasRef, objects] = useCanvas();
+    const { id } = useParams();
+    const [canvasRef, objects] = useCanvas(id);
     const { game, ip, port } = useGameContext();
+    const history = useHistory();
+    const [loading, submitCanvas] = useSubmitCanvas();
+
+    const canvasStyles = loading ? { pointerEvents: 'none' } : {};
 
     return (
         <>
             <div>
                 <div style={{border: '5px solid black', display: 'inline-block'}}>
-                    <canvas id="canvas"></canvas>
+                    <canvas id="canvas" style={canvasStyles}></canvas>
                 </div>
             </div>
             <div className="btn-toolbar">
@@ -83,6 +72,7 @@ export default function Editor() {
                                 fontFamily: 'Roboto',
                             }));
                         }}
+                        disabled={loading}
                     >
                         Add Text
                     </button>
@@ -94,6 +84,7 @@ export default function Editor() {
                             const objs = canvasRef.current.getActiveObjects();
                             canvasRef.current.remove(...objs);
                         }}
+                        disabled={loading}
                     >
                         Remove
                     </button>
@@ -101,36 +92,8 @@ export default function Editor() {
                 <div className="btn-group mr-2">
                     <button
                         className="btn btn-primary"
-                        onClick={async () => {
-                            console.log({
-                                method: 'POST',
-                                body: {
-                                    id: uuidv4(),
-                                    canvas: {
-                                        ...canvasRef.current.toJSON(),
-                                    }
-                                },
-                            });
-                            const res = await fetch('http://localhost:3000/images', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    id: uuidv4(),
-                                    canvas: {
-                                        ...canvasRef.current.toJSON(),
-                                    },
-                                    game: {
-                                        host: ip,
-                                        port: port,
-                                        type: game,
-                                    }
-                                }),
-                            });
-                            const json = await res.json();
-                            console.log(json);
-                        }}
+                        onClick={() => submitCanvas({ game, ip, port, history, canvasRef })}
+                        disabled={loading}
                     >
                         Submit
                     </button>

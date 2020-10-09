@@ -6,8 +6,6 @@ export default function Upload() {
     const [picture, setPicture] = useState(null);
     const history = useHistory();
 
-    console.log(picture);
-
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
